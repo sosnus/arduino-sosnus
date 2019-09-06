@@ -1,3 +1,8 @@
+//Serial monitor, source: https://wiki.dfrobot.com/LCD12864_Shield_SKU_DFR0287
+/* changes
+Move lib from local folder to all libs
+Select LCD type: U8GLIB_NHD_C12864 u8g(13, 11, 10, 9, 8);
+change rotation and contrast
 /*
 
   Console.pde
@@ -39,7 +44,10 @@
 */
 
 
-#include "U8glib.h"
+//#include "U8glib.h"
+
+#include <U8glib.h>
+U8GLIB_NHD_C12864 u8g(13, 11, 10, 9, 8);
 
 // setup u8g object, please remove comment from one of the following constructor calls
 // IMPORTANT NOTE: The following list is incomplete. The complete list of supported 
@@ -212,6 +220,9 @@ void read_line(void) {
 
 // Arduino master setup
 void setup(void) {
+     u8g.setRot180();
+   u8g.setContrast(0);
+   
   // set font for the console window
   u8g.setFont(u8g_font_5x7);
   //u8g.setFont(u8g_font_9x15);
