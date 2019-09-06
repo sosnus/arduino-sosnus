@@ -3,6 +3,9 @@
 Move lib from local folder to all libs
 Select LCD type: U8GLIB_NHD_C12864 u8g(13, 11, 10, 9, 8);
 change rotation and contrast
+
+v2: // ignore '\n' , respect '\r'
+add baud table and ADC variables
 /*
 
   Console.pde
@@ -48,6 +51,10 @@ change rotation and contrast
 
 #include <U8glib.h>
 U8GLIB_NHD_C12864 u8g(13, 11, 10, 9, 8);
+
+int baud_table[] = {9600, 300,1200,2400,4800,9600,19200, 38400, 57600, 115200};
+uint8_t adc0 = 111;
+uint8_t adc1 = 222;
 
 // setup u8g object, please remove comment from one of the following constructor calls
 // IMPORTANT NOTE: The following list is incomplete. The complete list of supported 
