@@ -129,7 +129,7 @@ uint8_t adc1 = 222;
 
 // setup input buffer
 #define LINE_MAX 30 
-uint8_t line_buf[LINE_MAX] = "U8GLIB Console";
+uint8_t line_buf[LINE_MAX] = "MobileConsole 24.10.2019";
 uint8_t line_pos = 0;
 
 // setup a text screen to support scrolling
@@ -215,10 +215,10 @@ void read_line(void) {
     else if ( c == '\n' ) {
       // ignore '\n' 
     }
-    else if ( c == '\r' ) {
-      exec_line();
-      reset_line();
-    }
+    // else if ( c == '\r' ) {
+    //   exec_line();
+    //   reset_line();
+    // }
     else if ( c == '\r' ) {
       // TODO: move corsor to position X,Y
       exec_line();
@@ -253,7 +253,7 @@ void setup(void) {
     cols = LINE_MAX-1; 
   
   clear_screen();               // clear screen
-  delay(1000);                  // do some delay
+  delay(10);                  // do some delay
   Serial.begin(9600);        // init serial
   exec_line();                    // place the input buffer into the screen
   reset_line();                   // clear input buffer
