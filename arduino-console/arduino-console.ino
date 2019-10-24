@@ -219,6 +219,11 @@ void read_line(void) {
       exec_line();
       reset_line();
     }
+    else if ( c == '\r' ) {
+      // TODO: move corsor to position X,Y
+      exec_line();
+      reset_line();
+    }
     else {
       char_to_line(c);
     }
