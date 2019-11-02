@@ -215,12 +215,15 @@ void read_line(void) {
     else if ( c == '\n' ) {
       // ignore '\n' 
     }
+    else if ( c == '\r' ) {
+      // ignore '\r' 
+    }
     // else if ( c == '\r' ) {
     //   exec_line();
     //   reset_line();
     // }
-    else if ( c == '\r' ) {
-      // TODO: move corsor to position X,Y
+    else if ( c == '@' ) {
+      // TODO: move cursor to position X,Y
       exec_line();
       reset_line();
     }
@@ -236,8 +239,8 @@ void setup(void) {
    u8g.setContrast(0);
    
   // set font for the console window
-  u8g.setFont(u8g_font_5x7);
-  //u8g.setFont(u8g_font_9x15);
+ // u8g.setFont(u8g_font_5x7);
+  u8g.setFont(u8g_font_9x15);
   
   // set upper left position for the string draw procedure
   u8g.setFontPosTop();
