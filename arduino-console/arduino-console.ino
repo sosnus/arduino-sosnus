@@ -1,4 +1,6 @@
 //Serial monitor, source: https://wiki.dfrobot.com/LCD12864_Shield_SKU_DFR0287
+#define MODE_SERIALPORT  0
+#define MODE_BALWANEK  1
 /* changes
 Move lib from local folder to all libs
 Select LCD type: U8GLIB_NHD_C12864 u8g(13, 11, 10, 9, 8);
@@ -55,7 +57,6 @@ U8GLIB_NHD_C12864 u8g(13, 11, 10, 9, 8);
 int baud_table[] = {9600, 300,1200,2400,4800,9600,19200, 38400, 57600, 115200};
 uint8_t adc0 = 111;
 uint8_t adc1 = 222;
-
 // setup u8g object, please remove comment from one of the following constructor calls
 // IMPORTANT NOTE: The following list is incomplete. The complete list of supported 
 // devices with all constructor calls is here: http://code.google.com/p/u8glib/wiki/device
@@ -133,7 +134,15 @@ uint8_t adc1 = 222;
 
 // setup input buffer
 #define LINE_MAX 30 
+#if MODE_SERIALPORT
 uint8_t line_buf[LINE_MAX] = "MobileConsole 24.10.2019";
+#elif MODE_BALWANEK
+uint8_t line_buf[LINE_MAX] = "Balwanek V2.1";
+#else
+//nothing
+#endif
+
+
 uint8_t line_pos = 0;
 
 // setup a text screen to support scrolling
@@ -180,7 +189,7 @@ void draw(void) {
 
 void exec_line(void) {
   // echo line to the serial monitor
-  Serial.println((const char *)line_buf);
+/////////  Serial.println((const char *)line_buf);
   
   // add the line to the screen
   add_line_to_screen();
@@ -216,25 +225,28 @@ void read_line(void) {
       reset_line();
       char_to_line(c);
     } 
-    else if ( c == '\n' ) {
-      // ignore '\n' 
+            else if ( c == '\n' ) { // ignore '\n'      
     }
-    else if ( c == '\r' ) {
-      // ignore '\r' 
+    #if MODE_SERIALPORT
+    // nothing
+    #elif MODE_BALWANEK
+
+    else if ( c == '\r' ) { // ignore '\r'      
     }
-    // else if ( c == '\r' ) {
-    //   exec_line();
-    //   reset_line();
-    // }
-    else if ( c == '@' ) {
+        else if ( c == '@' ) {
       // TODO: move cursor to position X,Y
       exec_line();
       reset_line();
     }
+    #else
+    //nothing
+    #endif
+
     else {
       char_to_line(c);
     }
   }
+//  Serial.println(modeString);
 }
 
 // Arduino master setup
@@ -245,8 +257,15 @@ pinMode(BUTTON,INPUT_PULLUP);
    u8g.setContrast(0);
    
   // set font for the console window
- // u8g.setFont(u8g_font_5x7);
-  u8g.setFont(u8g_font_9x15);
+  #if MODE_SERIALPORT
+u8g.setFont(u8g_font_5x7);
+#elif MODE_BALWANEK
+u8g.setFont(u8g_font_9x15);
+#else
+//nothing
+#endif
+ // 
+  
   
   // set upper left position for the string draw procedure
   u8g.setFontPosTop();
@@ -263,23 +282,23 @@ pinMode(BUTTON,INPUT_PULLUP);
   
   clear_screen();               // clear screen
   delay(10);                  // do some delay
+  //todo: select serialport baudrate
+  //todo: maybe select port number
   Serial.begin(9600);        // init serial
   exec_line();                    // place the input buffer into the screen
   reset_line();                   // clear input buffer
+
+    Serial.println("START...");
 }
 
-// Arduino main loop
-int i = 0;
+int liczba = 111;
 void loop(void) {
   read_line();
   if(digitalRead(BUTTON)==LOW)
   {
-    String msg = String(i);
-    msg += String(i);
-    msg += String(i);
-    msg += String(i);
-    Serial.println(msg);
-    delay(1000);
-    i++;
-  }
+    delay(500);
+    liczba = liczba + 111;
+    delay(500);
+    Serial.println(liczba);
+  } //todo: weryfikacja liczby
 }
