@@ -291,9 +291,17 @@ u8g.setFont(u8g_font_9x15);
     Serial.println("START...");
 }
 
+unsigned long nextSend = 0;
+#define SEND_INTERVAL 400
 int liczba = 111;
 void loop(void) {
   read_line();
+   if (millis() > nextSend)
+  {
+    nextSend += SEND_INTERVAL;
+    
+    Serial.println(liczba);
+  }
   if(digitalRead(BUTTON)==LOW)
   {
     delay(500);
