@@ -127,6 +127,10 @@ uint8_t adc1 = 222;
 //U8GLIB_SSD1351_128X128GH_HICOLOR u8g(8, 9, 7); // Arduino, HW SPI Com: SCK = 76, MOSI = 75, CS = 8, A0 = 9, RESET = 7 (Freetronics OLED)
 
 
+
+#include <String.h>
+#define BUTTON  12
+
 // setup input buffer
 #define LINE_MAX 30 
 uint8_t line_buf[LINE_MAX] = "MobileConsole 24.10.2019";
@@ -235,6 +239,8 @@ void read_line(void) {
 
 // Arduino master setup
 void setup(void) {
+  
+pinMode(BUTTON,INPUT_PULLUP);
      u8g.setRot180();
    u8g.setContrast(0);
    
@@ -263,6 +269,17 @@ void setup(void) {
 }
 
 // Arduino main loop
+int i = 0;
 void loop(void) {
   read_line();
+  if(digitalRead(BUTTON)==LOW)
+  {
+    String msg = String(i);
+    msg += String(i);
+    msg += String(i);
+    msg += String(i);
+    Serial.println(msg);
+    delay(1000);
+    i++;
+  }
 }
