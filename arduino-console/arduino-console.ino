@@ -2,50 +2,50 @@
 #define MODE_SERIALPORT  0
 #define MODE_BALWANEK  1
 /* changes
-Move lib from local folder to all libs
-Select LCD type: U8GLIB_NHD_C12864 u8g(13, 11, 10, 9, 8);
-change rotation and contrast
+  Move lib from local folder to all libs
+  Select LCD type: U8GLIB_NHD_C12864 u8g(13, 11, 10, 9, 8);
+  change rotation and contrast
 
-v2: // ignore '\n' , respect '\r'
-add baud table and ADC variables
-/*
+  v2: // ignore '\n' , respect '\r'
+  add baud table and ADC variables
+  /*
 
   Console.pde
-  
+
   Read from serial monitor, output to display
-  
-  >>> Before compiling: Please remove comment from the constructor of the 
+
+  >>> Before compiling: Please remove comment from the constructor of the
   >>> connected graphics display (see below).
-  
+
   Universal 8bit Graphics Library, http://code.google.com/p/u8glib/
-  
+
   Copyright (c) 2011, olikraus@gmail.com
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without modification, 
+  Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
 
-  * Redistributions of source code must retain the above copyright notice, this list 
+    Redistributions of source code must retain the above copyright notice, this list
     of conditions and the following disclaimer.
-    
-  * Redistributions in binary form must reproduce the above copyright notice, this 
-    list of conditions and the following disclaimer in the documentation and/or other 
+
+    Redistributions in binary form must reproduce the above copyright notice, this
+    list of conditions and the following disclaimer in the documentation and/or other
     materials provided with the distribution.
 
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
-  CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
-  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
-  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
-  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR 
-  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
-  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
-  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-  STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
-  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.  
-  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+  CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+  STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 */
 
 
@@ -54,11 +54,11 @@ add baud table and ADC variables
 #include <U8glib.h>
 U8GLIB_NHD_C12864 u8g(13, 11, 10, 9, 8);
 
-int baud_table[] = {9600, 300,1200,2400,4800,9600,19200, 38400, 57600, 115200};
+int baud_table[] = {9600, 300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200};
 uint8_t adc0 = 111;
 uint8_t adc1 = 222;
 // setup u8g object, please remove comment from one of the following constructor calls
-// IMPORTANT NOTE: The following list is incomplete. The complete list of supported 
+// IMPORTANT NOTE: The following list is incomplete. The complete list of supported
 // devices with all constructor calls is here: http://code.google.com/p/u8glib/wiki/device
 //U8GLIB_NHD27OLED_BW u8g(13, 11, 10, 9);	// SPI Com: SCK = 13, MOSI = 11, CS = 10, A0 = 9
 //U8GLIB_NHD27OLED_2X_BW u8g(13, 11, 10, 9);	// SPI Com: SCK = 13, MOSI = 11, CS = 10, A0 = 9
@@ -131,9 +131,10 @@ uint8_t adc1 = 222;
 
 #include <String.h>
 #define BUTTON  12
+#define BUZZ  6
 
 // setup input buffer
-#define LINE_MAX 30 
+#define LINE_MAX 30
 #if MODE_SERIALPORT
 uint8_t line_buf[LINE_MAX] = "MobileConsole 24.10.2019";
 #elif MODE_BALWANEK
@@ -158,29 +159,29 @@ uint8_t rows, cols;
 // clear entire screen, called during setup
 void clear_screen(void) {
   uint8_t i, j;
-  for( i = 0; i < ROW_MAX; i++ )
-    for( j = 0; j < LINE_MAX; j++ )
-      screen[i][j] = 0;  
+  for ( i = 0; i < ROW_MAX; i++ )
+    for ( j = 0; j < LINE_MAX; j++ )
+      screen[i][j] = 0;
 }
 
 // append a line to the screen, scroll up
 void add_line_to_screen(void) {
   uint8_t i, j;
-  for( j = 0; j < LINE_MAX; j++ )
-    for( i = 0; i < rows-1; i++ )
-      screen[i][j] = screen[i+1][j];
-  
-  for( j = 0; j < LINE_MAX; j++ )
-    screen[rows-1][j] = line_buf[j];
+  for ( j = 0; j < LINE_MAX; j++ )
+    for ( i = 0; i < rows - 1; i++ )
+      screen[i][j] = screen[i + 1][j];
+
+  for ( j = 0; j < LINE_MAX; j++ )
+    screen[rows - 1][j] = line_buf[j];
 }
 
 // U8GLIB draw procedure: output the screen
 void draw(void) {
   uint8_t i, y;
-  // graphic commands to redraw the complete screen are placed here    
+  // graphic commands to redraw the complete screen are placed here
   y = 0;       // reference is the top left -1 position of the string
-  y--;           // correct the -1 position of the drawStr 
-  for( i = 0; i < rows; i++ )
+  y--;           // correct the -1 position of the drawStr
+  for ( i = 0; i < rows; i++ )
   {
     u8g.drawStr( 0, y, (char *)(screen[i]));
     y += u8g.getFontLineSpacing();
@@ -189,29 +190,29 @@ void draw(void) {
 
 void exec_line(void) {
   // echo line to the serial monitor
-/////////  Serial.println((const char *)line_buf);
-  
+  /////////  Serial.println((const char *)line_buf);
+
   // add the line to the screen
   add_line_to_screen();
-  
+
   // U8GLIB picture loop
-  u8g.firstPage();  
+  u8g.firstPage();
   do {
     draw();
-  } while( u8g.nextPage() );
+  } while ( u8g.nextPage() );
 }
 
 // clear current input buffer
-void reset_line(void) { 
-      line_pos = 0;
-      line_buf[line_pos] = '\0';  
+void reset_line(void) {
+  line_pos = 0;
+  line_buf[line_pos] = '\0';
 }
 
-// add a single character to the input buffer 
+// add a single character to the input buffer
 void char_to_line(uint8_t c) {
-      line_buf[line_pos] = c;
-      line_pos++;
-      line_buf[line_pos] = '\0';  
+  line_buf[line_pos] = c;
+  line_pos++;
+  line_buf[line_pos] = '\0';
 }
 
 // check serial in and handle the character
@@ -220,93 +221,100 @@ void read_line(void) {
   {
     uint8_t c;
     c = Serial.read();
-    if ( line_pos >= cols-1 ) {
+    if ( line_pos >= cols - 1 ) {
       exec_line();
       reset_line();
       char_to_line(c);
-    } 
-            else if ( c == '\n' ) { // ignore '\n'      
     }
-    #if MODE_SERIALPORT
+    else if ( c == '\n' ) { // ignore '\n'
+    }
+#if MODE_SERIALPORT
     // nothing
-    #elif MODE_BALWANEK
+#elif MODE_BALWANEK
 
-    else if ( c == '\r' ) { // ignore '\r'      
+    else if ( c == '\r' ) { // ignore '\r'
     }
-        else if ( c == '@' ) {
+    else if ( c == '@' ) {
       // TODO: move cursor to position X,Y
       exec_line();
       reset_line();
     }
-    #else
+#else
     //nothing
-    #endif
+#endif
 
     else {
       char_to_line(c);
     }
   }
-//  Serial.println(modeString);
+  //  Serial.println(modeString);
 }
 
 // Arduino master setup
 void setup(void) {
-  
-pinMode(BUTTON,INPUT_PULLUP);
-     u8g.setRot180();
-   u8g.setContrast(0);
-   
+
+  pinMode(BUTTON, INPUT_PULLUP);
+  pinMode(BUZZ, OUTPUT);
+  digitalWrite(BUZZ, HIGH);
+  u8g.setRot180();
+  u8g.setContrast(0);
+
   // set font for the console window
-  #if MODE_SERIALPORT
-u8g.setFont(u8g_font_5x7);
+#if MODE_SERIALPORT
+  u8g.setFont(u8g_font_5x7);
 #elif MODE_BALWANEK
-u8g.setFont(u8g_font_9x15);
+  u8g.setFont(u8g_font_9x15);
 #else
-//nothing
+  //nothing
 #endif
- // 
-  
-  
+  //
+
+
   // set upper left position for the string draw procedure
   u8g.setFontPosTop();
-  
+
   // calculate the number of rows for the display
   rows = u8g.getHeight() / u8g.getFontLineSpacing();
   if ( rows > ROW_MAX )
-    rows = ROW_MAX; 
-  
+    rows = ROW_MAX;
+
   // estimate the number of columns for the display
   cols = u8g.getWidth() / u8g.getStrWidth("m");
-  if ( cols > LINE_MAX-1 )
-    cols = LINE_MAX-1; 
-  
+  if ( cols > LINE_MAX - 1 )
+    cols = LINE_MAX - 1;
+
   clear_screen();               // clear screen
-  delay(10);                  // do some delay
+  delay(5);                  // do some delay
   //todo: select serialport baudrate
   //todo: maybe select port number
   Serial.begin(9600);        // init serial
   exec_line();                    // place the input buffer into the screen
   reset_line();                   // clear input buffer
 
-    Serial.println("START...");
+  Serial.println("START...");
 }
 
 unsigned long nextSend = 0;
-#define SEND_INTERVAL 400
-int liczba = 111;
+#define SEND_INTERVAL 1000
+int liczba = 1;
 void loop(void) {
   read_line();
-   if (millis() > nextSend)
+  if (millis() > nextSend)
   {
-    nextSend += SEND_INTERVAL;
     
+  digitalWrite(BUZZ, LOW);
+    nextSend += SEND_INTERVAL;
+    delay(20);
     Serial.println(liczba);
+    
+  digitalWrite(BUZZ, HIGH);
   }
-  if(digitalRead(BUTTON)==LOW)
+  if (digitalRead(BUTTON) == LOW)
   {
-    delay(500);
-    liczba = liczba + 111;
-    delay(500);
+  digitalWrite(BUZZ, LOW);
+    liczba = liczba + 1;
     Serial.println(liczba);
+    delay(500);
+  digitalWrite(BUZZ, HIGH);
   } //todo: weryfikacja liczby
 }
