@@ -256,7 +256,7 @@ void setup(void) {
   pinMode(BUTTON, INPUT_PULLUP);
   pinMode(BUZZ, OUTPUT);
   digitalWrite(BUZZ, HIGH);
-  u8g.setRot180();
+  //u8g.setRot180();
   u8g.setContrast(0);
 
   // set font for the console window
