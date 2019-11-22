@@ -138,7 +138,7 @@ uint8_t adc1 = 222;
 #if MODE_SERIALPORT
 uint8_t line_buf[LINE_MAX] = "MobileConsole 24.10.2019";
 #elif MODE_BALWANEK
-uint8_t line_buf[LINE_MAX] = "Balwanek V2.1";
+uint8_t line_buf[LINE_MAX] = "Balwanek V2.2";
 #else
 //nothing
 #endif
@@ -287,7 +287,14 @@ void setup(void) {
   delay(5);                  // do some delay
   //todo: select serialport baudrate
   //todo: maybe select port number
-  Serial.begin(9600);        // init serial
+  #if MODE_SERIALPORT
+    Serial.begin(9600);        // init serial
+#elif MODE_BALWANEK
+  Serial.begin(57600);        // init serial
+#else
+//nothing
+#endif
+
   exec_line();                    // place the input buffer into the screen
   reset_line();                   // clear input buffer
 
