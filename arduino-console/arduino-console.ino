@@ -1,6 +1,6 @@
 //Serial monitor, source: https://wiki.dfrobot.com/LCD12864_Shield_SKU_DFR0287
-#define MODE_SERIALPORT  0
-#define MODE_BALWANEK  1
+#define MODE_SERIALPORT  1
+#define MODE_BALWANEK  0
 /* changes
   Move lib from local folder to all libs
   Select LCD type: U8GLIB_NHD_C12864 u8g(13, 11, 10, 9, 8);
@@ -136,7 +136,7 @@ uint8_t adc1 = 222;
 // setup input buffer
 #define LINE_MAX 30
 #if MODE_SERIALPORT
-uint8_t line_buf[LINE_MAX] = "MobileConsole 24.10.2019";
+uint8_t line_buf[LINE_MAX] = "MobileConsole 22.12.2019";
 #elif MODE_BALWANEK
 uint8_t line_buf[LINE_MAX] = "Balwanek V2.2";
 #else
@@ -226,7 +226,10 @@ void read_line(void) {
       reset_line();
       char_to_line(c);
     }
-    else if ( c == '\n' ) { // ignore '\n'
+    else if ( c == '\n' ) {
+            exec_line();
+      reset_line();
+      // ignore '\n'
     }
 #if MODE_SERIALPORT
     // nothing
@@ -236,8 +239,7 @@ void read_line(void) {
     }
     else if ( c == '@' ) {
       // TODO: move cursor to position X,Y
-      exec_line();
-      reset_line();
+
     }
 #else
     //nothing
