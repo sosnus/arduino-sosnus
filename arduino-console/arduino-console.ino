@@ -136,7 +136,7 @@ uint8_t adc1 = 222;
 // setup input buffer
 #define LINE_MAX 30
 #if MODE_SERIALPORT
-uint8_t line_buf[LINE_MAX] = "MobileConsole 22.12.2019";
+uint8_t line_buf[LINE_MAX] = "MobileConsole 23.12.2019";
 #elif MODE_BALWANEK
 uint8_t line_buf[LINE_MAX] = "Balwanek V2.2";
 #else
@@ -231,9 +231,9 @@ void read_line(void) {
       reset_line();
       // ignore '\n'
     }
-#if MODE_SERIALPORT
+//#if MODE_SERIALPORT
     // nothing
-#elif MODE_BALWANEK
+//#elif MODE_BALWANEK
 
     else if ( c == '\r' ) { // ignore '\r'
     }
@@ -241,9 +241,9 @@ void read_line(void) {
       // TODO: move cursor to position X,Y
 
     }
-#else
+//#else
     //nothing
-#endif
+//#endif
 
     else {
       char_to_line(c);
